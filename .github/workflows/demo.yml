@@ -6,10 +6,11 @@ on:
     branches:
       - main
     paths:
-      - '004_databases/**'
-      - '001_roles/**'
-      - '002_warehouses/**'
-      - '003_users/**'
+      #- '004_databases/**'
+      #- '001_roles/**'
+      #- '002_warehouses/**'
+      #- '003_users/**'
+      - 'infra_objs/**'
       
 
   # Allows you  run this workflow manually from the Actions tab
@@ -46,4 +47,4 @@ jobs:
           pip install schemachange
           
           echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/* -a $SF_ACCOUNT -u $SNOWFLAKE_USER -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f $GITHUB_WORKSPACE/infra_objs -a $SF_ACCOUNT -u $SNOWFLAKE_USER -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
