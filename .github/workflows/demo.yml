@@ -38,7 +38,7 @@ jobs:
           SF_ROLE: ${{ vars.SF_ROLE }}  # Use environment-specific variables for SF_ROLE
           SF_DATABASE: ${{ vars.SF_DATABASE }}  # Use environment-specific variables for SF_DATABASE
           SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}  # Use environment-specific secrets for SF_PASSWORD
-          ENV: ${{ secrets.ENV }}  # Make ENV available in the run script
+          ENV: ${{ vars.ENV }}  # Make ENV available in the run script
         run: |
           echo "Deploying to environment: ${ENV}"
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
