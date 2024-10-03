@@ -16,7 +16,7 @@ jobs:
     environment: ${{ secrets.ENV }}  # ENV is now defined at the repository level
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Set environment variable
         env:
-            ENV: ${{ secrets.ENV }}  
+          ENV: ${{ secrets.ENV }}  
         run: echo "ENV=${{ secrets.ENV }}" >> $GITHUB_ENV
 
       - name: Run schemachange
@@ -38,12 +38,13 @@ jobs:
           SF_ROLE: ${{ vars.SF_ROLE }}  # Use environment-specific variables for SF_ROLE
           SF_DATABASE: ${{ vars.SF_DATABASE }}  # Use environment-specific variables for SF_DATABASE
           SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}  # Use environment-specific secrets for SF_PASSWORD
+          ENV: ${{ secrets.ENV }}  # Make ENV available in the run script
         run: |
-          echo "Deploying to environment: ${{ secrets.ENV }}"
+          echo "Deploying to environment: ${ENV}"
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
           python --version
           echo "Step 1: Installing schemachange"
           pip install schemachange
           
           echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/100_infra_objs/001_roles -a $SF_ACCOUNT -u $SNOWFLAKE_USER -r $SF_ROLE -w $SF_WAREHOUSE  --vars '{"env": "'${ENV}'"}' -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f $GITHUB_WORKSPACE/100_infra_objs/001_roles -a $SF_ACCOUNT -u $SNOWFLAKE_USER -r $SF_ROLE -w $SF_WAREHOUSE --vars '{"env": "'${ENV}'"}' -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
