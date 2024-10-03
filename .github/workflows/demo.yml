@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Specify that the job will run for the selected environment based on the ENV repository secret
-    environment: ${{ secrets.ENV }} # ENV is  now defined at the repository level
+    environment: ${{ vars.ENV }} # ENV is  now defined at the repository level
 
     steps:
       # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -27,8 +27,8 @@ jobs:
 
       - name: Set environment variable
         env:
-          ENV: ${{ secrets.ENV }}  
-        run: echo "ENV=${{ secrets.ENV }}" >> $GITHUB_ENV
+          ENV: ${{ vars.ENV }}  
+        run: echo "ENV=${{ vars.ENV }}" >> $GITHUB_ENV
 
       - name: Run schemachange
         env:
