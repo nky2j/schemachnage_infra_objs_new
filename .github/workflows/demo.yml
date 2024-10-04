@@ -6,7 +6,7 @@ on:
     branches:
       - main   # Single branch for all environments
     paths:
-      - '100_infra_objs//003_users/**'
+      - '100_infra_objs/003_users/**'
 
 jobs:
   deploy-snowflake-changes-job:
