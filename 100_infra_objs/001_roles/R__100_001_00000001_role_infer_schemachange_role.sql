@@ -4,7 +4,5 @@ GRANT USAGE ON WAREHOUSE {{ env }}_SCHEMACHANGE_WH TO ROLE {{ env }}_INFER_SCHEM
 */
 {% if env == "DEV" %}
   CREATE ROLE  IF NOT EXISTS {{ env }}_INFER_SCHEMACHANGE_ROLE;
-{% else %}
-  SELECT 'Role should not be created'; 
 {% endif %}
 

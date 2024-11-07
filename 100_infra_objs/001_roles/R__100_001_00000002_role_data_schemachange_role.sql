@@ -4,6 +4,4 @@
 --GRANT ROLE {{ env }}_DATA_SCHEMACHANGE_ROLE TO  USER {{ main_user }};
 {% if env == "DEV" %}
   CREATE ROLE  IF NOT EXISTS {{ env }}_DATA_SCHEMACHANGE_ROLE;
-{% else %}
-  SELECT 'Role should not be created'; 
 {% endif %}
