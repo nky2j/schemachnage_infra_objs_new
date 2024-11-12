@@ -2,13 +2,31 @@ name: snowflake-devops-infra-projects
 
 # Controls when the action will run. 
 on:
-  push:
-    branches:
-      - main   # Single branch for all environments
-    paths:
-      #- '100_infra_objs/001_roles/**'
-      - '100_infra_objs/001_roles/**'
-      
+  #push:
+  #  branches:
+  #    - main   # Single branch for all environments
+  #  paths:
+  #    - '100_infra_objs/001_roles/**'
+  pull_request:
+      types: [closed]  # Trigger when a pull request is closed
+      branches:
+        - dev  # Only trigger if the PR is merged into the 'dev' branch
+        #- uat
+        #- main
+      paths:
+        - '100_infra_objs/001_roles/**'
+    
+  workflow_dispatch:
+      inputs:
+        environment:
+          description: 'Choose the environment to deploy to (DEV, UAT, PROD)'
+          required: true
+          default: DEV
+          type: choice
+          options:
+            - DEV
+            - UAT
+            - PROD   
 
 jobs:
   deploy-snowflake-changes-job:
