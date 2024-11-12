@@ -7,15 +7,6 @@ on:
   #    - main   # Single branch for all environments
   #  paths:
   #    - '100_infra_objs/001_roles/**'
-  pull_request:
-      types: [closed]  # Trigger when a pull request is closed
-      branches:
-        - dev  # Only trigger if the PR is merged into the 'dev' branch
-        #- uat
-        #- main
-      paths:
-        - '100_infra_objs/001_roles/**'
-    
   workflow_dispatch:
       inputs:
         environment:
