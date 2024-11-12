@@ -1,59 +1,56 @@
 name: snowflake-devops-infra-projects
 
-# Controls when the action will run. 
 on:
-  #push:
-  #  branches:
-  #    - main   # Single branch for all environments
-  #  paths:
-  #    - '100_infra_objs/001_roles/**'
   workflow_dispatch:
-      inputs:
-        environment:
-          description: 'Choose the environment to deploy to (DEV, UAT, PROD)'
-          required: true
-          default: DEV
-          type: choice
-          options:
-            - DEV
-            - UAT
-            - PROD   
+    inputs:
+      environment:
+        description: 'Choose the environment to deploy to (DEV, UAT, PROD)'
+        required: true
+        default: DEV
+        type: choice
+        options:
+          - DEV
+          - UAT
+          - PROD
 
 jobs:
   deploy-snowflake-changes-job:
     runs-on: ubuntu-latest
 
-    # Specify that the job will run for the selected environment based on the ENV repository secret
-    environment: ${{ vars.ENV }} # ENV is  now defined at the repository level
+    # Use the repository-level ENV variable here (no need for workflow_dispatch input)
+    environment: ${{ vars.ENV }}  # Reference the repository-level ENV variable
 
     steps:
-      # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Use Python 3.8.x
       - name: Use Python 3.8.x
         uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.8.x
 
+      # Set environment variable
       - name: Set environment variable
         env:
-          ENV: ${{ vars.ENV }}  
+          ENV: ${{ vars.ENV }}  # Use the repository-level ENV variable directly
           SF_USERNAME: ${{ vars.SF_USERNAME }}  # Pull SF_USERNAME from your environment-specific variables
-        run: | 
+        run: |
           echo "Setting environment variables..."
-          echo "ENV=${{ vars.ENV }}" >> $GITHUB_ENV
+          echo "ENV=${{ vars.ENV }}" >> $GITHUB_ENV  # Set ENV from the repository-level variable
           echo "SF_USERNAME=${{ vars.SF_USERNAME }}" >> $GITHUB_ENV
 
+      # Run schemachange
       - name: Run schemachange
         env:
-          SF_ACCOUNT: ${{ vars.SF_ACCOUNT }}  # Use environment-specific variables for SF_ACCOUNT
-          SF_WAREHOUSE: ${{ vars.SF_WAREHOUSE }}  # Use environment-specific variables for SF_WAREHOUSE
-          SNOWFLAKE_USER: ${{ vars.SF_USERNAME }}  # Use environment-specific variables for SF_USERNAME
-          SF_ROLE: ${{ vars.SF_ROLE }}  # Use environment-specific variables for SF_ROLE
-          SF_DATABASE: ${{ vars.SF_DATABASE }}  # Use environment-specific variables for SF_DATABASE
-          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}  # Use environment-specific secrets for SF_PASSWORD
-          ENV: ${{ vars.ENV }}  # Make ENV available in the run script
+          SF_ACCOUNT: ${{ vars.SF_ACCOUNT }}
+          SF_WAREHOUSE: ${{ vars.SF_WAREHOUSE }}
+          SNOWFLAKE_USER: ${{ vars.SF_USERNAME }}
+          SF_ROLE: ${{ vars.SF_ROLE }}
+          SF_DATABASE: ${{ vars.SF_DATABASE }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
+          ENV: ${{ vars.ENV }}  # Use the repository-level ENV variable
         run: |
           echo "Deploying to environment: ${ENV}"
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
